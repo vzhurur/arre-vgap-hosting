@@ -15,7 +15,7 @@ if (file_exists($file)) {
 	readfile($file);
 }
 else {
-	echo "Error: No se puede encontrar el archivo: '" . $file . "' con el turno";
+	echo "Error: can not read player file: '" . $file . "' for turn";
 }
 
 ?>
