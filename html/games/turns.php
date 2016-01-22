@@ -1,32 +1,32 @@
 <p>
-Hola <em><?php echo $_SERVER['PHP_AUTH_USER']; ?></em> 
+Hi <em><?php echo $_SERVER['PHP_AUTH_USER']; ?></em> 
 </p>
-<h2>Subir y bajar turnos</h2>
+<h2>Uploading and downloading turns</h2>
 <pre>
-   Pincha en el botón: 
-      Upload para subir un nuevo turno y 
-      Download para bajar tu turno actual.
+   Click on the buttons to
+      Upload a new turn and 
+      Download your current turn
 </pre>
 <form action="upload.php" method="post" enctype="multipart/form-data">
     <input type="file" accept=".trn" name="fileToUpload" id="fileToUpload">
     <input type="submit" value="Upload" name="submit">
 </form>
 <br>
-<form action="do_download.php" method="post" enctype="multipart/form-data">
+<form action="download.php" method="post" enctype="multipart/form-data">
     <input type="submit" value="Download" name="submit">
 </form>
 <br>
-<p> <em>Ejecución Automática Activada</em> </p>
-<h2>Próxima ejecución será en</h2>
-<!-- <p>PERIODO ESTIVAL --- No hacer caso de la fecha.</p> 
-<p>La ejecución será manual cuando estén todos los turnos</p> -->
+<p> <em>Automatic Hosting</em> </p>
+<h2>Next turn on</h2>
+<!-- <p>Holidays</p> 
+<p>Host will be executed manually when all turns are in</p> -->
 <p>
 <pre><code><b>
-    <?php  readfile("/home/vgap/phost/logs/next_date.log"); ?>
+    <?php  readfile("../../../phost/logs/next_date.log"); ?>
 </b></code></pre>
 </p>
-<h2>Estado de los turnos</h2>
-<p>La comprobacion de turnos ahora mismo muestra: </p>
+<h2>Host State</h2>
+<p>Check turns utility returns: </p>
 <pre><code>
     <?php readfile($game_check); ?>
 </code></pre>
