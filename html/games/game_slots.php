@@ -1,7 +1,7 @@
 <?php
 
 // Nombre de la partida
-$game_name = "Babylon 5";
+$game_name = "Game Name";
 
 // Datos de los slots:
 // ------ User ----------- PlayerID -- Race Name
