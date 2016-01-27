@@ -1,0 +1,60 @@
+# Add-on was written by vhurur
+# (c) 2015 Version 1.0
+# Version release date :
+#
+# This is the config file for Flags add-on
+# It is intended to be portable and open source.
+#
+# Flags find some target (flags) planets and check its owner
+# and structures. If a planet has the required structures a
+# flags is counted and reported.
+
+%OPTION_FLAGS
+
+# Required min structures to count the flags
+# Default = colonist, factories, mines, defenses
+DefaultStructures = 10000, 50, 25, 15
+
+%FLAGS
+
+# Each line stores a flag using planet Id. You could provide
+# min for each structure or Default
+# PlanetId = Default
+# PlanetId = colonist, factories, mines, defenses
+
+# 1 = Default
+# 2 = 100, 0, 0, 1
+
+309 = Default
+448 = Default
+443 = Default
+#431 = Default
+84 = Default
+285 = Default
+17 = Default
+80 = Default
+365 = Default
+260 = Default
+
+#These flags have different required structures
+
+392 = 1, 0, 0, 0
+434 = 1, 0, 0, 0
+
+184 = 1, 0, 0, 0
+477 = 1, 0, 0, 0
+
+180 = 1, 0, 0, 0
+322 = 1, 0, 0, 0
+
+402 = 1, 0, 0, 0
+186 = 1, 0, 0, 0
+
+%HIDDEN_FLAGS
+
+# The report for these flags will hide the planet id
+
+431 = 1, 0, 0, 0, birds_hw
+75 = 1, 0, 0, 0
+394 = 1, 0, 0, 0
+164 = 1, 0, 0, 0
