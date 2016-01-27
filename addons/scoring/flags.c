@@ -94,19 +94,19 @@ Boolean ComputeFlags(const char *lhs, char *rhs, const char *lInputLine)
 
             if ( ! ShowFlags ) strcpy(showId, "Hidden");
 
-            if ( 2 == sscanf(rhs, " %255[^,], %255[^\n]", value, showId) && 0 == strcmp(value, "Default") )
-            {
-            } 
-            else if ( 1 == sscanf(rhs, " %255s", value) && 0 == strcmp(value, "Default") )
-            {
-            } 
-            else if ( 5 == sscanf(rhs, "%u,%hu,%hu,%hu, %255[^\n]",&MinCol, &MinFactories, &MinMine, &MinDefenses, showId) )
+            if ( 5 == sscanf(rhs, "%u,%hu,%hu,%hu, %255[^\n]",&MinCol, &MinFactories, &MinMine, &MinDefenses, showId) )
             {
             }
             else if ( 4 == sscanf(rhs, "%u,%hu,%hu,%hu",&MinCol, &MinFactories, &MinMine, &MinDefenses) )
             {
             }
-            else
+            else if ( 2 == sscanf(rhs, " %255[^,], %255[^\n]", value, showId) && 0 == strcmp(value, "Default") )
+            {
+            } 
+            else if ( 1 == sscanf(rhs, " %255s", value) && 0 == strcmp(value, "Default") )
+            {
+            } 
+            else 
             {
                 Error("Unknown target structures for flag, should be either 'Default' or 4 numbers, optionally followed by a label to hide planet id");
                 return False;
