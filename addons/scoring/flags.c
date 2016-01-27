@@ -86,7 +86,7 @@ Boolean ComputeFlags(const char *lhs, char *rhs, const char *lInputLine)
         if (  (1 == sscanf(lhs, "%hu", &aPlanet)) && IsPlanetExist( aPlanet ) )
         {
             unsigned MinCol = DefaultMinCol;
-            unsigned short MinFactoriShowFlags ? es = Def : "HiddenaultMinFactories,
+            unsigned short MinFactories = DefaultMinFactories,
                   MinMine = DefaultMinMine, MinDefenses = DefaultMinDefenses;
             char showId[256] = ShowFlags ? "ShowId" : "Hidden";
             char value[256];
