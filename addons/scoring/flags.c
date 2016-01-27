@@ -50,7 +50,7 @@ Boolean AssignOption(const char *lhs, char *rhs, const char *lInputLine)
 {
     if ( lhs != NULL && rhs != NULL )
     {
-        char option[256], value[256];
+        char option[256];
         if ( 1 == sscanf(lhs, "%255s", option) && 0 == strcmp(option, "DefaultStructures") )
         {
             if ( 4 != sscanf(rhs, "%u,%hu,%hu,%hu",
@@ -88,9 +88,11 @@ Boolean ComputeFlags(const char *lhs, char *rhs, const char *lInputLine)
             unsigned MinCol = DefaultMinCol;
             unsigned short MinFactories = DefaultMinFactories,
                   MinMine = DefaultMinMine, MinDefenses = DefaultMinDefenses;
-            char showId[256] = ShowFlags ? "ShowId" : "Hidden";
+            char showId[256] = "ShowId";
             char value[256];
             int goal;
+
+            if ( ! ShowFlags ) strcpy(showId, "Hidden");
 
             if ( 2 == sscanf(rhs, " %255[^,], %255[^\n]", value, showId) && 0 == strcmp(value, "Default") )
             {
@@ -150,15 +152,16 @@ void print_header()
     printf("\n%s\n"
            "==============\n"
            "\n"
-           " %10s %10s\n " // "%10s %10s %10s %10s\n"
-           " ---------- ---------- \n", // " ---------- ---------- ---------- ----------\n",
+           " %10s %10s\n " /* "%10s %10s %10s %10s\n" */
+           " ---------- ---------- \n", /* " ---------- ---------- ---------- ----------\n",*/
            ShowFlags ? "Flag Report" : "Hidden Flag Report", 
            "Planet", "Player" /*, "Colonist", "Factories", "Mines", "Defenses"*/);    
 }
 
 void print_player()
 {
-    printf("\nFlag Report by Player\n"
+    int lPlayer;
+    printf("\n%s\n"
                "========================\n"
                "\n"
                " Player    Flags\n"
