@@ -121,12 +121,12 @@ Boolean ComputeFlags(const char *lhs, char *rhs, const char *lInputLine)
 
             if ( 0 == strcmp(showId, "ShowId") ) 
             {
-                sprintf(showId, "%10u", aPlanet);
+                sprintf(showId, "%u", aPlanet);
             }
             
             if ( goal )
             {
-                printf("%s %10u \n", showId, PlanetOwner(aPlanet));
+                printf("%20s %10u \n", showId, PlanetOwner(aPlanet));
                 /*printf("%10u %10u %10u %10u %10u %10u\n", aPlanet, PlanetOwner(aPlanet),
                    PlanetCargo(aPlanet, COLONISTS),
                    PlanetFactories(aPlanet),
@@ -135,7 +135,7 @@ Boolean ComputeFlags(const char *lhs, char *rhs, const char *lInputLine)
             }
             else
             {
-                printf("%s %10s\n", showId, PlanetOwner(aPlanet) == 0 ? "Unowned" : "Not enough");
+                printf("%20s %10s\n", showId, PlanetOwner(aPlanet) == 0 ? "Unowned" : "Not enough");
             }
         }
         else
@@ -152,8 +152,8 @@ void print_header()
     printf("\n%s\n"
            "==============\n"
            "\n"
-           " %10s %10s\n " /* "%10s %10s %10s %10s\n" */
-           " ---------- ---------- \n", /* " ---------- ---------- ---------- ----------\n",*/
+           " %20s %10s\n " /* "%10s %10s %10s %10s\n" */
+           "           ---------- ---------- \n", /* " ---------- ---------- ---------- ----------\n",*/
            ShowFlags ? "Flag Report" : "Hidden Flag Report", 
            "Planet", "Player" /*, "Colonist", "Factories", "Mines", "Defenses"*/);    
 }
