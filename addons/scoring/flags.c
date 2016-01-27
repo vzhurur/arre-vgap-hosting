@@ -1,19 +1,21 @@
 /*
 An scoring add-on for phostpdk.
-Computes the flags owned by each player and produces two results files
-(by flag or by player) to be display in a Web. 
+Computes the flags owned by each player and print to stdout two result
+tables for flags and another two for hidden flags. 
 Flags are configurated by a file, each flag has separates minimum values
 for Cols, Mines, Factories or Defense or default values. Defaults values
 can be defined also. 
 It is possible to use Hidden Flags, that is, flags whose planet id is 
-unknown to players. Or remove the planet Id by inserting a label after 
-default or list of structures.
+unknown to players. In that case an optional label could be supplied at the end
+of either values or default.
 Since flags only reads host data it could be executed outside turn hosting.
 */
 
 #include <phostpdk/phostpdk.h>
 #include <stdio.h>
 #include <string.h>
+
+#define ADDON_CONFIG_FILE "flags.txt"
 
 void flags_addon();
 
@@ -49,12 +51,7 @@ Boolean AssignOption(const char *lhs, char *rhs, const char *lInputLine)
     if ( lhs != NULL && rhs != NULL )
     {
         char option[256], value[256];
-        if ( 1 == sscanf(lhs, "%255s", option) && 0 == strcmp(option, "ShowFlags") )
-        {
-            ShowFlags = ((1 == sscanf(rhs, "%255s", value)) && (0 == strcmp(value, "Yes")));
-            printf("ShowFlags set to %s (%i)\n", value, ShowFlags);
-        }
-        else if ( 1 == sscanf(lhs, "%255s", option) && 0 == strcmp(option, "DefaultStructures") )
+        if ( 1 == sscanf(lhs, "%255s", option) && 0 == strcmp(option, "DefaultStructures") )
         {
             if ( 4 != sscanf(rhs, "%u,%hu,%hu,%hu",
                              &DefaultMinCol, &DefaultMinFactories,
@@ -89,16 +86,16 @@ Boolean ComputeFlags(const char *lhs, char *rhs, const char *lInputLine)
         if (  (1 == sscanf(lhs, "%hu", &aPlanet)) && IsPlanetExist( aPlanet ) )
         {
             unsigned MinCol = DefaultMinCol;
-            unsigned short MinFactories = DefaultMinFactories,
+            unsigned short MinFactoriShowFlags ? es = Def : "HiddenaultMinFactories,
                   MinMine = DefaultMinMine, MinDefenses = DefaultMinDefenses;
-            char showId[256] = "ShowId";
+            char showId[256] = ShowFlags ? "ShowId" : "Hidden";
             char value[256];
             int goal;
 
             if ( 2 == sscanf(rhs, " %255[^,], %255[^\n]", value, showId) && 0 == strcmp(value, "Default") )
             {
             } 
-            else if ( 1 == sscanf(rhs, "%255s", value) && 0 == strcmp(value, "Default") )
+            else if ( 1 == sscanf(rhs, " %255s", value) && 0 == strcmp(value, "Default") )
             {
             } 
             else if ( 5 == sscanf(rhs, "%u,%hu,%hu,%hu, %255[^\n]",&MinCol, &MinFactories, &MinMine, &MinDefenses, showId) )
@@ -120,26 +117,23 @@ Boolean ComputeFlags(const char *lhs, char *rhs, const char *lInputLine)
 
             flags[PlanetOwner(aPlanet)] += goal;
 
-            if ( ShowFlags == True )
+            if ( 0 == strcmp(showId, "ShowId") ) 
             {
-                if ( 0 == strcmp(showId, "ShowId") ) 
-                {
-                    sprintf(showId, "%10u", aPlanet);
-                }
-                
-                if ( goal )
-                {
-                    printf("%s %10u \n", showId, PlanetOwner(aPlanet));
-                    /*printf("%10u %10u %10u %10u %10u %10u\n", aPlanet, PlanetOwner(aPlanet),
-                       PlanetCargo(aPlanet, COLONISTS),
-                       PlanetFactories(aPlanet),
-                       PlanetMines(aPlanet),
-                       PlanetDefense(aPlanet));*/
-                }
-                else
-                {
-                    printf("%s %10s\n", showId, PlanetOwner(aPlanet) == 0 ? "Unowned" : "Not enough");
-                }
+                sprintf(showId, "%10u", aPlanet);
+            }
+            
+            if ( goal )
+            {
+                printf("%s %10u \n", showId, PlanetOwner(aPlanet));
+                /*printf("%10u %10u %10u %10u %10u %10u\n", aPlanet, PlanetOwner(aPlanet),
+                   PlanetCargo(aPlanet, COLONISTS),
+                   PlanetFactories(aPlanet),
+                   PlanetMines(aPlanet),
+                   PlanetDefense(aPlanet));*/
+            }
+            else
+            {
+                printf("%s %10s\n", showId, PlanetOwner(aPlanet) == 0 ? "Unowned" : "Not enough");
             }
         }
         else
@@ -151,9 +145,39 @@ Boolean ComputeFlags(const char *lhs, char *rhs, const char *lInputLine)
     return True;
 }
 
+void print_header()
+{
+    printf("\n%s\n"
+           "==============\n"
+           "\n"
+           " %10s %10s\n " // "%10s %10s %10s %10s\n"
+           " ---------- ---------- \n", // " ---------- ---------- ---------- ----------\n",
+           ShowFlags ? "Flag Report" : "Hidden Flag Report", 
+           "Planet", "Player" /*, "Colonist", "Factories", "Mines", "Defenses"*/);    
+}
+
+void print_player()
+{
+    printf("\nFlag Report by Player\n"
+               "========================\n"
+               "\n"
+               " Player    Flags\n"
+               "--------  ------- \n",
+               ShowFlags ? "Flag Report by Player" : "Hidden Flag Report by Player"
+               );
+               
+    for ( lPlayer = 1; lPlayer <= RACE_NR; ++lPlayer)
+    {
+        if (PlayerIsActive(lPlayer))
+        {
+            printf("%4d      %4d\n", lPlayer, flags[lPlayer]);
+        }
+    }
+}
+
 void flags_addon()
 {
-    const char* config_file_name = "flags.txt";
+    const char* config_file_name = ADDON_CONFIG_FILE;
     int lPlayer;
 
     FILE *f = OpenInputFile(config_file_name, GAME_DIR_ONLY | TEXT_MODE);
@@ -163,50 +187,28 @@ void flags_addon()
         ConfigFileReaderEx( f, config_file_name, "OPTION_FLAGS", True, AssignOption, Error, True );
         fclose(f);
 
-        if ( ShowFlags == True )
-        {
-            printf("\nFlag Report\n"
-                   "==============\n"
-                   "\n"
-                   " %10s %10s\n " // "%10s %10s %10s %10s\n"
-                   " ---------- ---------- \n", // " ---------- ---------- ---------- ----------\n",
-                   "Planet", "Player" /*, "Colonist", "Factories", "Mines", "Defenses"*/);
-        }
+        ShowFlags = True;
+        print_header();
 
         f = OpenInputFile(config_file_name, GAME_DIR_ONLY | TEXT_MODE);
-        ConfigFileReaderEx( f, config_file_name, "Flags", False, ComputeFlags, Error, False );
+        ConfigFileReaderEx( f, config_file_name, "FLAGS", False, ComputeFlags, Error, False );
 
-        printf("\nFlags Report by Player\n"
-               "========================\n"
-               "\n"
-               " Player    Flags\n"
-               "--------  ------- \n");
-        for ( lPlayer = 1; lPlayer <= RACE_NR; ++lPlayer)
-        {
-            if (PlayerIsActive(lPlayer))
-            {
-                printf("%4d      %4d\n", lPlayer, flags[lPlayer]);
-            }
-        }
+        print_player();
 
         fclose(f);
+        
+        for ( lPlayer = 1; lPlayer <= RACE_NR; ++lPlayer)
+        {
+            flags[lPlayer] = 0;
+        }        
 
         ShowFlags = False;
+        print_header();
+        
         f = OpenInputFile(config_file_name, GAME_DIR_ONLY | TEXT_MODE);
         ConfigFileReaderEx( f, config_file_name, "HIDDEN_FLAGS", False, ComputeFlags, Error, False );
 
-        printf("\nHidden Flags Report by Player\n"
-               "========================\n"
-               "\n"
-               " Player    Flags\n"
-               "--------  ------- \n");
-        for ( lPlayer = 1; lPlayer <= RACE_NR; ++lPlayer)
-        {
-            if (PlayerIsActive(lPlayer))
-            {
-                printf("%4d      %4d\n", lPlayer, flags[lPlayer]);
-            }
-        }
+        print_player();
 
         fclose(f);
     }
