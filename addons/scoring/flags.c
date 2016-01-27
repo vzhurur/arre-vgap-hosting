@@ -149,8 +149,8 @@ Boolean ComputeFlags(const char *lhs, char *rhs, const char *lInputLine)
 
 void print_header()
 {
-    printf("\n%s\n"
-           "==============\n"
+    printf("\n           %s\n"           
+           "           ========================\n"
            "\n"
            " %20s %10s\n " /* "%10s %10s %10s %10s\n" */
            "           ---------- ---------- \n", /* " ---------- ---------- ---------- ----------\n",*/
@@ -161,11 +161,11 @@ void print_header()
 void print_player()
 {
     int lPlayer;
-    printf("\n%s\n"
-               "========================\n"
-               "\n"
-               " Player    Flags\n"
-               "--------  ------- \n",
+    printf("\n           %s\n"
+           "           ========================\n"
+           "\n"
+           "            Player    Flags\n"
+           "           --------  ------- \n",
                ShowFlags ? "Flag Report by Player" : "Hidden Flag Report by Player"
                );
                
@@ -173,7 +173,7 @@ void print_player()
     {
         if (PlayerIsActive(lPlayer))
         {
-            printf("%4d      %4d\n", lPlayer, flags[lPlayer]);
+            printf("           %4d      %4d\n", lPlayer, flags[lPlayer]);
         }
     }
 }
